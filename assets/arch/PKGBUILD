@@ -1,0 +1,37 @@
+# Maintainer: Reza Jelveh
+# Contributor: Maxim Baz <archlinux at maximbaz dot com>
+# Contributor: Andrew Gallant <jamslam@gmail.com>
+pkgname=usbmuxd-rs
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="USB Multiplex Daemon"
+arch=('x86_64')
+url="https://github.com/fishman/usbmuxd-rs"
+license=('MIT' 'custom')
+depends=('gcc-libs' 'pcre2')
+makedepends=('rust')
+provides=('usbmuxd')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/fishman/$pkgname/archive/$pkgver.tar.gz")
+sha512sums=('skip')
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  cargo build --release --locked
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+
+  cargo test --release --locked
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -Dm755 "target/release/usbmuxd" "$pkgdir/usr/bin/usbmuxd"
+
+  install -Dm644 "README.md" "$pkgdir/usr/share/doc/${pkgname}/README.md"
+  install -Dm644 "COPYING" "$pkgdir/usr/share/licenses/${pkgname}/COPYING"
+  install -Dm644 "LICENSE-MIT" "$pkgdir/usr/share/licenses/${pkgname}/LICENSE-MIT"
+}
